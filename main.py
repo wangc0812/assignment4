@@ -23,13 +23,16 @@ network = LeNet()
 optimizer = torch.optim.SGD(network.parameters(), lr=0.1, momentum=0.9)
 loss_func = nn.CrossEntropyLoss()
 
-
-#train the network
-test(network, loss_func, test_loader)
-for epoch in range(1, n_epochs + 1):
-  train(epoch,network, train_loader, optimizer, loss_func, log_interval)
+try:
+  network.load_state_dict(torch.load('./results/model.pth'))
+except:
+  #train the network
   test(network, loss_func, test_loader)
+  for epoch in range(1, n_epochs + 1):
+    train(epoch,network, train_loader, optimizer, loss_func, log_interval)
+    test(network, loss_func, test_loader)
 
+print_size_of_model(network)
 # Dynamic Quantization / print model_size/execution_time/test precision
 
 # Static Quantization / print model_size/execution_time/test precision
