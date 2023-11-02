@@ -1,8 +1,23 @@
 import torch
+import torch.nn as nn
+
 class LeNet(torch.nn.Module):
     def __init__(self):
         super(LeNet, self).__init__()
-        raise ValueError("NotImplemented")
+        self.features = nn.Sequential(
+            nn.Conv2d(1, 6, 5, stride=1),
+            nn.ReLU(inplace=True),
+            nn.AvgPool2d(kernel_size=2, stride=2),
+            nn.Conv2d(6, 16, 5, stride=1),
+            nn.ReLU(inplace=True), 
+            nn.AvgPool2d(kernel_size=2, stride=2), 
+            nn.Conv2d(16, 120, 5, stride=1),
+            nn.ReLU(inplace=True),
+            nn.Linear(120, 84),
+            nn.Linear(84, 10) 
+        )
+        
     def forward(self, x):
-        raise ValueError("NotImplemented")
+        x = self.features(x)
+        
         return x
