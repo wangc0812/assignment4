@@ -1,4 +1,5 @@
 import torch
+import torch.nn as nn
 from dataset_loader import load_mnist
 from LeNet import LeNet
 from util import test, train, print_size_of_model, time_model_evaluation
@@ -19,8 +20,8 @@ train_loader, test_loader = load_mnist(batch_size_train,batch_size_test)
 network = LeNet()
 
 # Define the optimizer and loss
-optimizer = None
-loss_func = None
+optimizer = torch.optim.SGD(network.parameters(), lr=0.1, momentum=0.9)
+loss_func = nn.CrossEntropyLoss()
 
 
 #train the network
