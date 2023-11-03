@@ -32,6 +32,7 @@ except:
     train(epoch,network, train_loader, optimizer, loss_func, log_interval)
     test(network, loss_func, test_loader)
 
+test(network, loss_func, test_loader)
 print_size_of_model(network)
 # Dynamic Quantization / print model_size/execution_time/test precision
 
