@@ -36,11 +36,12 @@ print("original model:")
 print_size_of_model(network)
 time_model_evaluation(network, loss_func, test_loader)
 
+# Dynamic Quantization / print model_size/execution_time/test precision
 print("dynamic quantized model:")
 import torch.quantization
 quantized_network = torch.quantization.quantize_dynamic(network, {torch.nn.Linear}, dtype=torch.qint8)
 print_size_of_model(quantized_network )
 time_model_evaluation(quantized_network, loss_func, test_loader)
-# Dynamic Quantization / print model_size/execution_time/test precision
+
 
 # Static Quantization / print model_size/execution_time/test precision
