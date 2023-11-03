@@ -43,12 +43,12 @@ def test(network, loss_f, test_loader, test_iter = -1):
       test_loss, correct, len(test_loader.dataset),
       100. * correct / len(test_loader.dataset)))
 
-def time_model_evaluation(model):
+def time_model_evaluation(model,loss_f, test_loader):
   eval_start_time = time.time()
-  result = test(model)
+  test(model,loss_f, test_loader)
   eval_end_time = time.time()
   eval_duration_time = eval_end_time - eval_start_time
-  print(result)
+  # print(result)
   print("Evaluate total time (seconds): {0:.1f}".format(eval_duration_time))
 
 
