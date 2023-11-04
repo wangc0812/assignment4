@@ -23,7 +23,7 @@ class LeNet(torch.nn.Module):
             nn.Linear(84, 10) 
         )
         
-        self.dequant = torch.ao.quantization.DeQuantStub()
+        self.dequant = torch.quantization.DeQuantStub()
         
     def forward(self, x):
         x = self.quant(x)

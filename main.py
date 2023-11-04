@@ -42,6 +42,7 @@ time_model_evaluation(network, loss_func, test_loader)
 print("\ndynamic quantized model:")
 import torch.quantization
 dquantized_network = torch.quantization.quantize_dynamic(network, {nn.Conv2d, nn.Linear}, dtype=torch.qint8)
+torch.save(dquantized_network.state_dict(), './results/dynamic_quantized_model.pth')
 # print(dquantized_network)
 # qconv1_weights = quantized_network.features[0].weight.data
 print_size_of_model(dquantized_network )
@@ -54,6 +55,7 @@ squantized_network = LeNet()
 squantized_network.load_state_dict(torch.load('./results/model.pth'))
 squantized_network.eval()
 
+squantized_network.fuse_model()
 backend = "fbgemm"
 squantized_network.qconfig = torch.quantization.get_default_qconfig(backend)
 torch.backends.quantized.engine = backend
@@ -63,6 +65,9 @@ torch.quantization.prepare(squantized_network, inplace=True)
 
 # convert to quantized version
 torch.quantization.convert(squantized_network, inplace=True)
+
+torch.save(squantized_network.state_dict(), './results/static_quantized_model.pth')
+
 print(squantized_network)
 
 print_size_of_model(squantized_network )
