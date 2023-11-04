@@ -58,6 +58,7 @@ squantized_network.eval()
 backend = "x86"
 squantized_network.qconfig = torch.quantization.get_default_qconfig(backend)
 torch.backends.quantized.engine = backend
+
 # insert observers
 torch.quantization.prepare(squantized_network, inplace=True)
 # Calibrate the model and collect statistics
