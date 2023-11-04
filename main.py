@@ -55,8 +55,7 @@ squantized_network = LeNet()
 squantized_network.load_state_dict(torch.load('./results/model.pth'))
 squantized_network.eval()
 
-squantized_network.fuse_model()
-backend = "fbgemm"
+backend = "x86"
 squantized_network.qconfig = torch.quantization.get_default_qconfig(backend)
 torch.backends.quantized.engine = backend
 # insert observers
@@ -72,5 +71,3 @@ print(squantized_network)
 
 print_size_of_model(squantized_network )
 time_model_evaluation(squantized_network, loss_func, test_loader)
-
-print(0)
