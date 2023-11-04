@@ -49,7 +49,7 @@ def time_model_evaluation(model,loss_f, test_loader):
   eval_end_time = time.time()
   eval_duration_time = eval_end_time - eval_start_time
   # print(result)
-  print("Evaluate total time (seconds): {0:.1f}".format(eval_duration_time))
+  print("Evaluate total time (seconds): {0:.6f}".format(eval_duration_time))
 
 
 def print_size_of_model(model):
