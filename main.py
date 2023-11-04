@@ -43,5 +43,4 @@ quantized_network = torch.quantization.quantize_dynamic(network, {torch.nn.Linea
 print_size_of_model(quantized_network )
 time_model_evaluation(quantized_network, loss_func, test_loader)
 
-
 # Static Quantization / print model_size/execution_time/test precision
