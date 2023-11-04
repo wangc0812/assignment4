@@ -34,13 +34,26 @@ except:
 
 print("original model:")
 print_size_of_model(network)
+onv1_weights = network.features[0].weight.data
 time_model_evaluation(network, loss_func, test_loader)
 
 # Dynamic Quantization / print model_size/execution_time/test precision
-print("dynamic quantized model:")
+print("\ndynamic quantized model:")
 import torch.quantization
-quantized_network = torch.quantization.quantize_dynamic(network, {torch.nn.Linear}, dtype=torch.qint8)
+quantized_network = torch.quantization.quantize_dynamic(network, {nn.Conv2d, nn.Linear}, dtype=torch.qint8)
+print(quantized_network)
+qconv1_weights = quantized_network.features[0].weight.data
 print_size_of_model(quantized_network )
 time_model_evaluation(quantized_network, loss_func, test_loader)
 
 # Static Quantization / print model_size/execution_time/test precision
+print("\nstatic quantized model:")
+
+# network.qconfig = torch.quantization.get_default_config('fbgemm')
+
+# # insert observers
+# torch.quantization.prepare(myModel, inplace=True)
+# # Calibrate the model and collect statistics
+
+# # convert to quantized version
+# torch.quantization.convert(myModel, inplace=True)
