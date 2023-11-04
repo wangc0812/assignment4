@@ -3,6 +3,7 @@ import torch.nn as nn
 from dataset_loader import load_mnist
 from LeNet import LeNet
 from util import test, train, print_size_of_model, time_model_evaluation
+import copy
 
 #define the hyper-paramters
 n_epochs = 3
@@ -40,20 +41,11 @@ time_model_evaluation(network, loss_func, test_loader)
 # Dynamic Quantization / print model_size/execution_time/test precision
 print("\ndynamic quantized model:")
 import torch.quantization
-quantized_network = torch.quantization.quantize_dynamic(network, {nn.Conv2d, nn.Linear}, dtype=torch.qint8)
-print(quantized_network)
-qconv1_weights = quantized_network.features[0].weight.data
-print_size_of_model(quantized_network )
-time_model_evaluation(quantized_network, loss_func, test_loader)
+dquantized_network = torch.quantization.quantize_dynamic(network, {nn.Conv2d, nn.Linear}, dtype=torch.qint8)
+# print(dquantized_network)
+# qconv1_weights = quantized_network.features[0].weight.data
+print_size_of_model(dquantized_network )
+time_model_evaluation(dquantized_network, loss_func, test_loader)
 
 # Static Quantization / print model_size/execution_time/test precision
 print("\nstatic quantized model:")
-
-# network.qconfig = torch.quantization.get_default_config('fbgemm')
-
-# # insert observers
-# torch.quantization.prepare(myModel, inplace=True)
-# # Calibrate the model and collect statistics
-
-# # convert to quantized version
-# torch.quantization.convert(myModel, inplace=True)
