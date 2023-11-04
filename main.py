@@ -49,3 +49,23 @@ time_model_evaluation(dquantized_network, loss_func, test_loader)
 
 # Static Quantization / print model_size/execution_time/test precision
 print("\nstatic quantized model:")
+
+squantized_network = LeNet()
+squantized_network.load_state_dict(torch.load('./results/model.pth'))
+squantized_network.eval()
+
+backend = "fbgemm"
+squantized_network.qconfig = torch.quantization.get_default_qconfig(backend)
+torch.backends.quantized.engine = backend
+# insert observers
+torch.quantization.prepare(squantized_network, inplace=True)
+# Calibrate the model and collect statistics
+
+# convert to quantized version
+torch.quantization.convert(squantized_network, inplace=True)
+print(squantized_network)
+
+print_size_of_model(squantized_network )
+time_model_evaluation(squantized_network, loss_func, test_loader)
+
+print(0)
