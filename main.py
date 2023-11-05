@@ -3,8 +3,10 @@ import torch.nn as nn
 from dataset_loader import load_mnist
 from LeNet import LeNet
 from util import test, train, print_size_of_model, time_model_evaluation
-import copy
+import torch.quantization
+import warnings
 
+warnings.filterwarnings('ignore')
 #define the hyper-paramters
 n_epochs = 3
 batch_size_train = 64
@@ -38,14 +40,23 @@ except:
     train(epoch,network, train_loader, optimizer, loss_func, log_interval)
     test(network, loss_func, test_loader)
 
-print("original model:")
+network.eval()
+print("\n-----------------original model:-----------------------")
+# print("original model: \n")
 print_size_of_model(network)
 onv1_weights = network.features[0].weight.data
 time_model_evaluation(network, loss_func, test_loader)
 
+original_state_dict = network.state_dict()
+
 # Dynamic Quantization / print model_size/execution_time/test precision
-print("\ndynamic quantized model:")
-import torch.quantization
+print("\n----------------dynamic quantized model:----------------")
+# print("dynamic quantized model:")
+
+dquantized_network = LeNet()
+dquantized_network.load_state_dict(original_state_dict)
+dquantized_network.eval()
+
 dquantized_network = torch.quantization.quantize_dynamic(network, {nn.Conv2d, nn.Linear}, dtype=torch.qint8)
 torch.save(dquantized_network.state_dict(), './results/dynamic_quantized_model.pth')
 # print(dquantized_network)
@@ -54,10 +65,12 @@ print_size_of_model(dquantized_network )
 time_model_evaluation(dquantized_network, loss_func, test_loader)
 
 # Static Quantization / print model_size/execution_time/test precision
-print("\nstatic quantized model:")
+print("\n----------------static quantized model:----------------")
+# print("static quantized model:\n")
 
 squantized_network = LeNet()
-squantized_network.load_state_dict(torch.load('./results/model.pth'))
+squantized_network.load_state_dict(original_state_dict)
+# squantized_network.load_state_dict(torch.load('./results/model.pth'))
 squantized_network.eval()
 
 backend = "x86"
@@ -73,7 +86,9 @@ torch.quantization.convert(squantized_network, inplace=True)
 
 torch.save(squantized_network.state_dict(), './results/static_quantized_model.pth')
 
-print(squantized_network)
+# print(squantized_network)
 
 print_size_of_model(squantized_network )
 time_model_evaluation(squantized_network, loss_func, test_loader)
+
+print(" ")
