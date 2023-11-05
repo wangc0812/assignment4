@@ -47,11 +47,11 @@ print_size_of_model(network)
 onv1_weights = network.features[0].weight.data
 time_model_evaluation(network, loss_func, test_loader)
 
+
 original_state_dict = network.state_dict()
 
 # Dynamic Quantization / print model_size/execution_time/test precision
 print("\n----------------dynamic quantized model:----------------")
-# print("dynamic quantized model:")
 
 dquantized_network = LeNet()
 dquantized_network.load_state_dict(original_state_dict)
@@ -60,34 +60,24 @@ dquantized_network.eval()
 dquantized_network = torch.quantization.quantize_dynamic(network, {nn.Conv2d, nn.Linear}, dtype=torch.qint8)
 torch.save(dquantized_network.state_dict(), './results/dynamic_quantized_model.pth')
 # print(dquantized_network)
-# qconv1_weights = quantized_network.features[0].weight.data
 print_size_of_model(dquantized_network )
 time_model_evaluation(dquantized_network, loss_func, test_loader)
 
 # Static Quantization / print model_size/execution_time/test precision
 print("\n----------------static quantized model:----------------")
-# print("static quantized model:\n")
 
 squantized_network = LeNet()
 squantized_network.load_state_dict(original_state_dict)
-# squantized_network.load_state_dict(torch.load('./results/model.pth'))
 squantized_network.eval()
 
 backend = "x86"
 squantized_network.qconfig = torch.quantization.get_default_qconfig(backend)
 torch.backends.quantized.engine = backend
-
-# insert observers
 torch.quantization.prepare(squantized_network, inplace=True)
-# Calibrate the model and collect statistics
-
-# convert to quantized version
 torch.quantization.convert(squantized_network, inplace=True)
-
 torch.save(squantized_network.state_dict(), './results/static_quantized_model.pth')
 
 # print(squantized_network)
-
 print_size_of_model(squantized_network )
 time_model_evaluation(squantized_network, loss_func, test_loader)
 
