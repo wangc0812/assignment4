@@ -5,10 +5,9 @@ from LeNet import LeNet
 from util import test, train, print_size_of_model, time_model_evaluation
 import torch.quantization
 import warnings
-import platform
 
-print(platform.python_version())
-print(torch.__version__)
+
+
 warnings.filterwarnings('ignore')
 #define the hyper-paramters
 n_epochs = 3
