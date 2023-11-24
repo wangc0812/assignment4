@@ -1,5 +1,8 @@
 import time
 import os,torch
+from torch.autograd import profiler
+
+
 def train(epoch,network, train_loader, optimizer, loss_f, log_interval):
   train_losses = []
   train_counter = []
@@ -27,15 +30,19 @@ def test(network, loss_f, test_loader, test_iter = -1):
   test_loss = 0
   correct = 0
   counter = 0
-  with torch.no_grad():
-    for i, (data, target) in enumerate(test_loader):
-      if test_iter == i:
-        break
-      counter += 1
-      output = network(data)
-      test_loss += loss_f(output, target)
-      pred = output.data.max(1, keepdim=True)[1]
-      correct += pred.eq(target.data.view_as(pred)).sum()
+  with profiler.profile(record_shapes=True) as prof:
+        with profiler.record_function("model_inference"):
+          with torch.no_grad():
+            for i, (data, target) in enumerate(test_loader):
+              if test_iter == i:
+                break
+              counter += 1
+              output = network(data)
+              test_loss += loss_f(output, target)
+              pred = output.data.max(1, keepdim=True)[1]
+              correct += pred.eq(target.data.view_as(pred)).sum()
+          
+  print(prof.key_averages().table(sort_by="cpu_time_total", row_limit=10))     
   test_loss /= counter
   test_losses.append(test_loss)
   if test_iter == -1:

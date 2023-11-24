@@ -1,5 +1,6 @@
 import torch
 import torch.nn as nn
+from torch.autograd import profiler
 
 class LeNet(torch.nn.Module):
     def __init__(self):
@@ -32,5 +33,5 @@ class LeNet(torch.nn.Module):
         x = x.view(x.size(0), -1)
         x = self.classifier(x)
         x = self.dequant(x)
-
+        
         return x

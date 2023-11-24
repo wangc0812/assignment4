@@ -5,6 +5,7 @@ from LeNet import LeNet
 from util import test, train, print_size_of_model, time_model_evaluation
 import torch.quantization
 import warnings
+from torch.autograd import profiler
 
 
 
@@ -48,7 +49,6 @@ print("\n-----------------original model:-----------------------")
 print_size_of_model(network)
 onv1_weights = network.features[0].weight.data
 time_model_evaluation(network, loss_func, test_loader)
-
 
 original_state_dict = network.state_dict()
 
