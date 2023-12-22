@@ -5,7 +5,7 @@ from LeNet import LeNet
 from util import test, train, print_size_of_model, time_model_evaluation
 import torch.quantization
 import warnings
-from torch.autograd import profiler
+# from torch.autograd import profiler
 
 
 

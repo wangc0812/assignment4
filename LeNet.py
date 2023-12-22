@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-from torch.autograd import profiler
+# from torch.autograd import profiler
 
 class LeNet(torch.nn.Module):
     def __init__(self):
